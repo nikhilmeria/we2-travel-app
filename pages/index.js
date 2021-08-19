@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function Home() {
+export default function Home({ videoId }) {
 	const classes = useStyles();
 
 	function FormRow() {
@@ -25,7 +25,7 @@ export default function Home() {
 					<Paper className={classes.paper}>
 						{' '}
 						<iframe
-							src="https://www.youtube.com/embed/AETFvQonfV8"
+							src="https://www.youtube.com/embed/${videoId}"
 							title="YouTube video player"
 							frameBorder="1"
 							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -84,3 +84,17 @@ export default function Home() {
 		</>
 	);
 }
+
+export const getStaticProps = async (context) => {
+	const resp = await fetch(
+		'https://www.googleapis.com/youtube/v3/search?part=snippet&q=Neeraj Chopra &key=AIzaSyB__XcjvWZY8JKXQR6xFMvOM0A5EyB8RoI&order=date&maxResults=10'
+	);
+
+	const data = await resp.json();
+
+	console.log('resp => ', data.items[0].id.videoId);
+
+	return {
+		props: { videoId: data.items[0].id.videoId },
+	};
+};
